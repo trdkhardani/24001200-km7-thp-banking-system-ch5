@@ -12,7 +12,7 @@ import validateTransaction from '../validation/transaction.js';
  * /api/v1/transactions:
  *   post:
  *     summary: Create a new transaction
- *     description: This endpoint allows an authenticated user to create a new transaction between two bank accounts. The user must own the source account, and the transaction amount must not exceed the available balance.
+ *     description: This endpoint creates a new transaction between two bank accounts. The transaction amount must not exceed the available balance from source account.
  *     tags:
  *       - Transactions
  *     requestBody:
@@ -235,6 +235,56 @@ router.post('/', async (req, res, next) => {
     }
 })
 
+/**
+ * @swagger
+ * /api/v1/transactions:
+ *   get:
+ *     summary: Retrieve all transactions data
+ *     description: This endpoint retrieves a list of all transactions, ordered by their ID in ascending order.
+ *     tags:
+ *       - Transactions
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved all transactions data.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 transactions_data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         example: 1
+ *                       source_account_id:
+ *                         type: integer
+ *                         example: 1
+ *                       destination_account_id:
+ *                         type: integer
+ *                         example: 2
+ *                       amount:
+ *                         type: number
+ *                         example: 500.00
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: failed
+ *                 message:
+ *                   type: string
+ *                   example: Internal server error
+ */
 router.get('/', async (req, res, next) => {
     try{
         let transactions = await prisma.transaction.findMany({
