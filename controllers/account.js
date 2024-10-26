@@ -198,6 +198,90 @@ router.get('/', async (req, res, next) => {
     }
 })
 
+/**
+ * @swagger
+ * /api/v1/accounts/{accountId}:
+ *   get:
+ *     summary: Get specific account information
+ *     description: Retrieves information for a specific bank account. The authenticated user can only access their own accounts unless they are an admin, in which case they can access all accounts.
+ *     tags:
+ *       - Accounts
+ *     parameters:
+ *       - in: path
+ *         name: accountId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *         description: The ID of the bank account to retrieve.
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved the account information.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 account_data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 1
+ *                     user_id:
+ *                       type: integer
+ *                       example: 1
+ *                     bank_name:
+ *                       type: string
+ *                       example: Bank of America
+ *                     bank_account_number:
+ *                       type: string
+ *                       example: 1234567890
+ *                     balance:
+ *                       type: number
+ *                       example: 5000.00
+ *                     user:
+ *                       type: object
+ *                       properties:
+ *                         id:
+ *                           type: integer
+ *                           example: 1
+ *                         name:
+ *                           type: string
+ *                           example: John Doe
+ *                         email:
+ *                           type: string
+ *                           example: john@example.com
+ *       404:
+ *         description: Account not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: failed
+ *                 message:
+ *                   type: string
+ *                   example: Account with id 1 not found
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: failed
+ *                 message:
+ *                   type: string
+ *                   example: Internal server error.
+ */
 router.get('/:accountId', async (req, res, next) => {
     const accId = Number(req.params.accountId)
     try {
