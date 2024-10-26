@@ -128,6 +128,59 @@ router.post('/', async (req, res, next) => {
     }
 })
 
+/**
+ * @swagger
+ * /api/v1/accounts:
+ *   get:
+ *     summary: Retrieve all bank accounts
+ *     description: This endpoint retrieves a list of all bank accounts in the system, ordered by account ID in ascending order.
+ *     tags:
+ *       - Accounts
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved the list of all bank accounts.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 accounts_data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         example: 1
+ *                       user_id:
+ *                         type: integer
+ *                         example: 1
+ *                       bank_name:
+ *                         type: string
+ *                         example: Bank of America
+ *                       bank_account_number:
+ *                         type: string
+ *                         example: 1234567890
+ *                       balance:
+ *                         type: number
+ *                         example: 1000.00
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: failed
+ *                 message:
+ *                   type: string
+ *                   example: Internal server error.
+ */
 router.get('/', async (req, res, next) => {
     try {
         let accounts = await prisma.bank_Account.findMany({
