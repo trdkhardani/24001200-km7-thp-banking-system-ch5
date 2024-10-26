@@ -60,7 +60,6 @@ model Transaction {
 }
 
 enum identityType {
-  Silver
-  Gold
-  Platinum
+  ID_CARD
+  PASSPORT
 }
