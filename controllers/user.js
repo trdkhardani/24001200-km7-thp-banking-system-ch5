@@ -13,7 +13,7 @@ import validateUser from '../validation/user.js';
  *     summary: Register a new user
  *     description: Registers a new user with a hashed password and profile details.
  *     tags:
- *       - Authentication
+ *       - Users
  *     requestBody:
  *       required: true
  *       content:
@@ -167,6 +167,61 @@ router.post('/', async (req, res, next) => {
     }
 })
 
+/**
+ * @swagger
+ * /api/v1/users:
+ *   get:
+ *     summary: Retrieve all users' data
+ *     description: This endpoint retrieves a list of all registered users, ordered by their ID in ascending order.
+ *     tags:
+ *       - Users
+ *     security:
+ *       - bearerAuth: []  # Requires a Bearer token with admin privileges.
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved all users' data.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 users_data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         example: 1
+ *                       name:
+ *                         type: string
+ *                         example: John Doe
+ *                       email:
+ *                         type: string
+ *                         example: john@example.com
+ *                       password:
+ *                          type: string
+ *                          example: $2a$12$0YkhPrnyJ5F.7BQjxZVe7u7zQMq9sOHVuO5grpxoOgAi5S8OStZ9W
+ *                       role:
+ *                          type: string
+ *                          example: customer
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: failed
+ *                 message:
+ *                   type: string
+ *                   example: Internal server error
+ */
 router.get('/', async (req, res) => {
     let users = await prisma.user.findMany({
         orderBy: {
