@@ -6,11 +6,116 @@ const prisma = new PrismaClient()
 
 import validateUser from '../validation/user.js';
 
-const encrypt = (password) => { // simple password encryption function
-    password = btoa(password)
-    return password;
-}
-
+/**
+ * @swagger
+ * /api/v1/users:
+ *   post:
+ *     summary: Register a new user
+ *     description: Registers a new user with a hashed password and profile details.
+ *     tags:
+ *       - Authentication
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: John Doe
+ *               password:
+ *                 type: string
+ *                 example: john123
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: john@example.com
+ *               identity_type:
+ *                 type: string
+ *                 enum: [ID_CARD, PASSPORT]
+ *                 example: ID_CARD
+ *               identity_number:
+ *                 type: string
+ *                 example: 1234567890
+ *               address:
+ *                 type: string
+ *                 example: 123 Main St, Jakarta
+ *     responses:
+ *       201:
+ *         description: User registered successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 message:
+ *                   type: string
+ *                   example: Successfully added John Doe's data
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 1
+ *                     name:
+ *                       type: string
+ *                       example: John Doe
+ *                     email:
+ *                       type: string
+ *                       example: john@example.com  
+ *                     password:
+ *                       type: string
+ *                       example: $2a$12$D/lWVGNdmlMW7RpXCEmDqOz4C6STECLUZeoIfxc9flHAQ3QRP7d66
+ *       400:
+ *         description: Validation error for user input.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   message:
+ *                     type: string
+ *                     example: '"name" is not allowed to be empty'
+ *                   path:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *                     example: ["name"]
+ *                   type:
+ *                     type: string
+ *                     example: "string.empty"
+ *                   context:
+ *                     type: object
+ *                     properties:
+ *                       label:
+ *                         type: string
+ *                         example: "name"
+ *                       value:
+ *                         type: string
+ *                         example: ""
+ *                       key:
+ *                         type: string
+ *                         example: "name"
+ *       409:
+ *         description: Email already exists.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: failed
+ *                 message:
+ *                   type: string
+ *                   example: Email has already been taken
+ */
 router.post('/', async (req, res, next) => {
     const validatedData = {
         name: req.body.name,

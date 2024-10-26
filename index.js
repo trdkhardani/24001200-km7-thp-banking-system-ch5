@@ -1,3 +1,7 @@
+import SwaggerUI from 'swagger-ui-express';
+const swaggerUI = SwaggerUI;
+import swaggerSpec from './swagger.js'
+
 import express from 'express';
 const app = express();
 import cookieParser from 'cookie-parser';
@@ -13,6 +17,7 @@ app.set('view engine', 'ejs');
 // app.set('views', path.join(__dirname, 'views'));
 
 app.use(router);
+app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 
 app.use(function(req, res, next) {
     return res.status(404).json({
