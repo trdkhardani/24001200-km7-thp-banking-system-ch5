@@ -2,7 +2,7 @@ import request from 'supertest';
 import { jest } from '@jest/globals';
 import bcrypt from 'bcrypt';
 import { PrismaClient } from '@prisma/client';
-import app from '../index.js';
+import app from '../../index.js';
 
 const mockPrisma = {
   user: {
@@ -19,7 +19,7 @@ describe('POST /api/v1/users', () => {
     name: 'John Doe',
     email: 'john@example.com',
     password: 'password123',
-    identity_type: 'Silver',
+    identity_type: 'ID_CARD',
     identity_number: '123456789',
     address: '123 Test Street',
   };
@@ -28,7 +28,7 @@ describe('POST /api/v1/users', () => {
     name: 'John Doe',
     email: 'john_stavolz@example.com',
     password: 'john123',
-    identity_type: 'Platinum',
+    identity_type: 'PASSPORT',
     identity_number: '676767312',
     address: '123 Test Street',
   };
