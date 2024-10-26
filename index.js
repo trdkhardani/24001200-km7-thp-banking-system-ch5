@@ -1,11 +1,16 @@
 import express from 'express';
 const app = express();
+import cookieParser from 'cookie-parser';
 import router from './routes/router.js';
+// import path from 'path';
 
 const port = 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
+app.use(cookieParser());
+app.set('view engine', 'ejs');
+// app.set('views', path.join(__dirname, 'views'));
 
 app.use(router);
 
