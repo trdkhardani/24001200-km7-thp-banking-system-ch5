@@ -235,6 +235,90 @@ router.get('/', async (req, res) => {
     })
 })
 
+/**
+ * @swagger
+ * /api/v1/users/{userId}:
+ *   get:
+ *     summary: Retrieve specific user data along with profile
+ *     description: This endpoint retrieves the data of a specific user by ID, including the user's profile information.
+ *     tags:
+ *       - Users
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *         description: The ID of the user to retrieve.
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved the user data with profile information.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 user_data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 1
+ *                     name:
+ *                       type: string
+ *                       example: John Doe
+ *                     email:
+ *                       type: string
+ *                       example: john@example.com
+ *                     password:
+ *                       type: string
+ *                       example: $2a$12$0YkhPrnyJ5F.7BQjxZVe7u7zQMq9sOHVuO5grpxoOgAi5S8OStZ9W
+ *                     role:
+ *                       type: string
+ *                       example: customer
+ *                     profile:
+ *                       type: object
+ *                       properties:
+ *                         identity_type:
+ *                           type: string
+ *                           example: KTP
+ *                         identity_number:
+ *                           type: string
+ *                           example: 1234567890
+ *                         address:
+ *                           type: string
+ *                           example: 123 Main St, Jakarta
+ *       404:
+ *         description: User not found. No user matches the provided ID.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: failed
+ *                 message:
+ *                   type: string
+ *                   example: User with id 1 not found
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: failed
+ *                 message:
+ *                   type: string
+ *                   example: Internal server error.
+ */
 router.get('/:userId', async (req, res, next) => {
     const userId = Number(req.params.userId)
     
