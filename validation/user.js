@@ -5,7 +5,7 @@ function validateUser(user){
         name: Joi.string().required(),
         email: Joi.string().email().required(),
         password: Joi.string().min(6).required(),
-        identity_type: Joi.string().valid('Silver').valid('Gold').valid('Platinum').required(),
+        identity_type: Joi.string().valid('ID_CARD').valid('PASSPORT').required(),
         identity_number: Joi.string().required(),
         address: Joi.string().required(),
     }).options({abortEarly: false});
