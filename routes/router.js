@@ -15,12 +15,25 @@ import express from 'express';
 const app = express();
 
 app.get('/register', async (req, res, next) => {
+    const { cookie } = req.headers
+
+    if(cookie){
+        return res.redirect('/dashboard')
+    }
+    
     res.render('register.ejs')
 });
 
 app.get('/login', async (req, res, next) => {
+    const { cookie } = req.headers
+
+    if(cookie){
+        return res.redirect('/dashboard')
+    }
+
     res.render('login.ejs')
 })
+
 app.get('/dashboard', authMiddleware, async (req, res, next) => {
     const token = req.cookies.token;
     jwt.verify(token, JWT_SECRET_KEY, (err, decoded) => {
