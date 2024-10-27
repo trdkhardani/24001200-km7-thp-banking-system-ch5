@@ -105,7 +105,7 @@ router.post('/login', async (req, res, next) => {
         res.cookie('token', token, {
             httpOnly: true
         })
-        res.redirect('/dashboard')
+        res.redirect('/auth/authenticate')
 
     } catch(err) {
         next(err)
