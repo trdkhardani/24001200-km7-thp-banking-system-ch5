@@ -203,7 +203,7 @@ router.get('/', async (req, res, next) => {
  * /api/v1/accounts/{accountId}:
  *   get:
  *     summary: Get specific account information
- *     description: Retrieves information for a specific bank account. The authenticated user can only access their own accounts unless they are an admin, in which case they can access all accounts.
+ *     description: Retrieves information for a specific bank account.
  *     tags:
  *       - Accounts
  *     parameters:
