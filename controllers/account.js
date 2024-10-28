@@ -313,7 +313,7 @@ router.get('/:accountId', async (req, res, next) => {
  * /api/v1/accounts/{accountId}:
  *   delete:
  *     summary: Delete a specific bank account
- *     description: This endpoint allows only **admin users** to delete a bank account by its ID.
+ *     description: This endpoint allows to delete a bank account by its ID.
  *     tags:
  *       - Accounts
  *     parameters:
@@ -381,7 +381,7 @@ router.get('/:accountId', async (req, res, next) => {
  *                   example: failed
  *                 message:
  *                   type: string
- *                   example: Internal server error.
+ *                   example: Internal server error
  */
 router.delete('/:accountId', async (req, res, next) => {
     const accId = Number(req.params.accountId)
