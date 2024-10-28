@@ -112,34 +112,4 @@ router.post('/login', async (req, res, next) => {
     }
 })
 
-router.get('/authenticate', (req, res) => {
-    const { authorization } = req.headers;
-
-    if(!authorization || !authorization.startsWith('Bearer ')){
-        return res.status(401).json({
-            status: 'failed',
-            message: 'Unauthorized'
-        })
-    }
-
-    // Extract the token from "Bearer <token>"
-    const token = authorization.split(' ')[1];
-
-    jwt.verify(token, JWT_SECRET_KEY, (err) => {
-        if(err){
-            return res.status(401).json({
-                status: 'failed',
-                message: 'Unauthorized',
-                error: err.message
-            })
-        }
-
-        // return res.json({
-        //     status: 'success',
-        //     message: 'Authenticated'
-        // })
-        return res.render('dashboard.ejs')
-    })
-})
-
 export default router;
