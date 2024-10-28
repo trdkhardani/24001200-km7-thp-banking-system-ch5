@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "start": "nodemon index.js"
+    "start": "nodemon index.js",
+    "seed": "node prisma/seed.js",
+    "migrate:seed": "npx prisma migrate reset -f && npx prisma migrate dev && node prisma/seed.js"
   },
   "keywords": [],
   "author": "",
