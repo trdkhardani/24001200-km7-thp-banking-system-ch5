@@ -1,7 +1,7 @@
-import userController from '../controllers/user.js';
-import accountController from '../controllers/account.js';
-import transactionController from '../controllers/transaction.js';
-import authController from '../controllers/auth.js';
+import userController from '../controllers/user.controller.js';
+import accountController from '../controllers/account.controller.js';
+import transactionController from '../controllers/transaction.controller.js';
+import authController from '../controllers/auth.controller.js';
 import authViewController from '../controllers/auth.view.js'
 
 import express from 'express';
