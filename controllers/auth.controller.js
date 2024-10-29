@@ -19,6 +19,129 @@ import validateCredentials from '../validation/login.js';
 
 import authMiddleware from '../middleware/auth.js'
 
+/**
+ * @swagger
+ * /api/v1/auth/register:
+ *   post:
+ *     summary: Register a new user
+ *     description: Registers a new user with a hashed password and profile details.
+ *     tags:
+ *       - Authentication
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: John Doe
+ *               password:
+ *                 type: string
+ *                 example: john123
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: john@example.com
+ *               identity_type:
+ *                 type: string
+ *                 enum: [ID_CARD, PASSPORT]
+ *                 example: ID_CARD
+ *               identity_number:
+ *                 type: string
+ *                 example: 1234567890
+ *               address:
+ *                 type: string
+ *                 example: 123 Main St, Jakarta
+ *     responses:
+ *       201:
+ *         description: User registered successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 message:
+ *                   type: string
+ *                   example: Successfully added John Doe's data
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 1
+ *                     name:
+ *                       type: string
+ *                       example: John Doe
+ *                     email:
+ *                       type: string
+ *                       example: john@example.com
+ *                     password:
+ *                       type: string
+ *                       example: $2a$12$D/lWVGNdmlMW7RpXCEmDqOz4C6STECLUZeoIfxc9flHAQ3QRP7d66
+ *       400:
+ *         description: Validation error for user input.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   message:
+ *                     type: string
+ *                     example: '"name" is not allowed to be empty'
+ *                   path:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *                     example: ["name"]
+ *                   type:
+ *                     type: string
+ *                     example: "string.empty"
+ *                   context:
+ *                     type: object
+ *                     properties:
+ *                       label:
+ *                         type: string
+ *                         example: "name"
+ *                       value:
+ *                         type: string
+ *                         example: ""
+ *                       key:
+ *                         type: string
+ *                         example: "name"
+ *       409:
+ *         description: Email already exists.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: failed
+ *                 message:
+ *                   type: string
+ *                   example: Email has already been taken
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: failed
+ *                 message:
+ *                   type: string
+ *                   example: Internal server error
+ */
 router.post('/register', async (req, res, next) => {
     const validatedData = {
         name: req.body.name,
@@ -72,6 +195,85 @@ router.post('/register', async (req, res, next) => {
     }
 })
 
+/**
+ * @swagger
+ * /api/v1/auth/login:
+ *   post:
+ *     summary: User login
+ *     description: Authenticates a user with email and password, and returns a JWT token if successful. Note that the token will expire in 6 hours.
+ *     tags:
+ *       - Authentication
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: john@example.com
+ *               password:
+ *                 type: string
+ *                 example: john123
+ *     responses:
+ *       200:
+ *         description: Successful login.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Logged in as John Doe
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     user:
+ *                       type: object
+ *                       properties:
+ *                         id:
+ *                           type: integer
+ *                         name:
+ *                           type: string
+ *                         email:
+ *                           type: string
+ *                         password:
+ *                           type: string
+ *                         role:
+ *                           type: string
+ *                     token:
+ *                       type: string
+ *                       example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+ *       400:
+ *         description: Invalid email or password.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: failed
+ *                 message:
+ *                   type: string
+ *                   example: Invalid email or password
+ *       500:
+ *         description: Server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: failed
+ *                 message:
+ *                   type: string
+ *                   example: Internal server error
+ */
 router.post('/login', async (req, res, next) => {
     const validatedData = {
         email: req.body.email,
@@ -127,6 +329,60 @@ router.post('/login', async (req, res, next) => {
     }
 })
 
+/**
+ * @swagger
+ * /api/v1/auth/authenticate:
+ *   get:
+ *     summary: Verify JWT authentication
+ *     description: Verifies if the provided JWT token is valid. Returns a success message if authenticated, or an error if unauthorized.
+ *     tags:
+ *       - Authentication
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User successfully authenticated.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 message:
+ *                   type: string
+ *                   example: Authenticated as John Doe
+ *       401:
+ *         description: Unauthorized. Token is missing or invalid.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: failed
+ *                 message:
+ *                   type: string
+ *                   example: Unauthorized
+ *                 error:
+ *                   type: string
+ *                   example: jwt expired
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: failed
+ *                 message:
+ *                   type: string
+ *                   example: Internal server error
+ */
 router.get('/authenticate', authMiddleware, (req, res) => {
         return res.json({
             status: 'success',
