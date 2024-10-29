@@ -19,30 +19,30 @@ jest.mock('@prisma/client', () => ({
 describe('POST /api/v1/transactions', () => {
     const mockTransactionSuccess = {
         source_account_id: 1,
-        destination_account_id: 10,
-        amount: 100
+        destination_account_id: 2,
+        amount: 1000
     }
 
     const mockTransactionInvalidSource = {
         source_account_id: 1111,
         destination_account_id: 1,
-        amount: 100
+        amount: 1000
     }
 
     const mockTransactionInvalidDest = {
         source_account_id: 1,
         destination_account_id: 1111,
-        amount: 100
+        amount: 1000
     }
     
     const mockTransactionSameAccId = {
         source_account_id: 1,
         destination_account_id: 1,
-        amount: 100
+        amount: 1000
     }
 
     const mockTransactionInsuffBal = {
-        source_account_id: 10,
+        source_account_id: 2,
         destination_account_id: 1,
         amount: 1000000
     }
