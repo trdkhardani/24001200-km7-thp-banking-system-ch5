@@ -75,3 +75,25 @@ Example:
 ```bash
 npm test -- tests/account/get_all_accounts.spec.js
 ```
+
+If you want to run all the tests simultaneously, use this command:
+
+**(IMPORTANT NOTE BEFORE SIMULTANEOUS TEST):**
+[(Reference)](https://stackoverflow.com/questions/57132803/completely-disable-auto-run-of-jest-test-runner-in-visual-studio-code-editor)
+Open settings.json by doing Command + Shift + P (Ctrl + Shift + P on Windows), typing settings JSON and selecting Preferences: Open User Settings (JSON). Then, add or edit this line to:
+
+```bash
+"jest.runMode": "on-demand",
+```
+
+The configuration above on `settings.json` will disable auto run of Jest in VS Code
+
+```bash
+# Run all
+npm test 
+
+# Run per category
+npm test tests/[directory]/
+# Example
+npm test tests/account/
+```
