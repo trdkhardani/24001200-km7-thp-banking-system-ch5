@@ -17,6 +17,8 @@ const prisma = new PrismaClient()
 import validateUser from '../validation/user.js';
 import validateCredentials from '../validation/login.js';
 
+import authMiddleware from '../middleware/auth.js'
+
 router.post('/register', async (req, res, next) => {
     const validatedData = {
         name: req.body.name,
@@ -52,7 +54,13 @@ router.post('/register', async (req, res, next) => {
             },
         })
 
-        return res.status(201).redirect('/login')
+        return res.status(201).json({
+            status: 'success',
+            message: `Successfully added ${user.name}'s data`,
+            user: user,
+        })
+
+        // return res.status(201).redirect('/login')
     } catch(err){
         if(err.code === 'P2002'){ // if email already exists
             return res.status(409).json({
@@ -101,15 +109,29 @@ router.post('/login', async (req, res, next) => {
 
         let token = jwt.sign({ id: user.id, email: user.email, name: user.name }, JWT_SECRET_KEY, {expiresIn: '6h'})
 
-        // res.header('Authorization', `Bearer ${token}`)
-        res.cookie('token', token, {
-            httpOnly: true
+        return res.json({
+            message: `Logged in as ${user.name}`,
+            data: {
+                user,
+                token
+            }
         })
-        res.redirect('/auth/authenticate')
+
+        // res.cookie('token', token, {
+        //     httpOnly: true
+        // })
+        // res.redirect('/auth/authenticate')
 
     } catch(err) {
         next(err)
     }
+})
+
+router.get('/authenticate', authMiddleware, (req, res) => {
+        return res.json({
+            status: 'success',
+            message: `Authenticated as ${req.user.name}`
+        })
 })
 
 export default router;
