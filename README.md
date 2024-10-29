@@ -86,7 +86,7 @@ Open settings.json by doing Command + Shift + P (Ctrl + Shift + P on Windows), t
 "jest.runMode": "on-demand",
 ```
 
-The configuration above on `settings.json` will disable auto run of Jest in VS Code
+The configuration above on `settings.json` will disable auto run of Jest in VS Code. Also, before doing the test, please [**clear, migrate, and seed the database first**.](#database-migration)
 
 ```bash
 # Run all
