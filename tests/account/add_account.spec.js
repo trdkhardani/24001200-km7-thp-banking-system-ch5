@@ -2,6 +2,9 @@ import request from 'supertest';
 import { jest } from '@jest/globals';
 import { PrismaClient } from '@prisma/client';
 import app from '../../index.js';
+import { faker } from '@faker-js/faker';
+
+const bankAccNumber = faker.finance.accountNumber(15)
 
 const mockPrisma = {
   account: {
@@ -24,7 +27,7 @@ describe('POST /api/v1/accounts', () => {
   const mockAccountSuccess = {
     user_id: 1,
     bank_name: 'BRI',
-    bank_account_number: '12345678911120',
+    bank_account_number: bankAccNumber,
     balance: 5000.00
   };
 
