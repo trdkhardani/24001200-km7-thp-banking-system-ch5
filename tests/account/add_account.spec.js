@@ -17,7 +17,7 @@ describe('POST /api/v1/accounts', () => {
   const mockAccount409 = {
     user_id: 1,
     bank_name: 'BNI',
-    bank_account_number: '1234567891112',
+    bank_account_number: '111111222222',
     balance: 5000.00
   };
 

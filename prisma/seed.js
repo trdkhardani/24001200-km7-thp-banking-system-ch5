@@ -32,7 +32,13 @@ async function main() {
             bank_name: 'BNI',
             bank_account_number: '222222333333',
             balance: 50000
-        }
+        },
+        {
+            user_id: 1,
+            bank_name: 'BRI',
+            bank_account_number: '333333444444',
+            balance: 50000
+        },
     ]
   })
 

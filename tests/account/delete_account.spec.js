@@ -20,7 +20,7 @@ describe('DELETE /api/v1/accounts/{accountId}', () => {
 
   it('should delete a specific account', async () => {
 
-    const res = await request(app).delete('/api/v1/accounts/10');
+    const res = await request(app).delete('/api/v1/accounts/3');
     
     expect(res.statusCode).toBe(200);
     expect(res.body.status).toBe('success');
