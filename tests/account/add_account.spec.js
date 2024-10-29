@@ -48,6 +48,8 @@ describe('POST /api/v1/accounts', () => {
 
     const res = await request(app).post('/api/v1/accounts').send(invalidAccount);
 
+    console.log(res.body)
+
     expect(res.statusCode).toBe(400);
   });
 
@@ -55,6 +57,8 @@ describe('POST /api/v1/accounts', () => {
     mockPrisma.account.create.mockRejectedValueOnce({ code: 'P2002' }); // Simulate conflict error
 
     const res = await request(app).post('/api/v1/accounts').send(mockAccount409);
+
+    console.log(res.body)
 
     expect(res.statusCode).toBe(409);
     // expect(res.body.message).toBe('Email has already been taken');

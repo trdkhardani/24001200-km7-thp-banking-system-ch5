@@ -20,6 +20,8 @@ describe('GET /api/v1/accounts', () => {
     it('should show all accounts', async () => {
         const res = await request(app).get('/api/v1/accounts')
 
+        console.log(res.body)
+
         expect(res.statusCode).toBe(200);
         expect(res.body.status).toBe('success');
     });

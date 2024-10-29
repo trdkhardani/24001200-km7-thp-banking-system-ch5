@@ -21,6 +21,8 @@ describe('GET /api/v1/accounts/{accountId}', () => {
   it('should show specific account', async () => {
 
     const res = await request(app).get('/api/v1/accounts/1');
+
+    console.log(res.body)
     
     expect(res.statusCode).toBe(200);
     expect(res.body.status).toBe('success');
@@ -29,6 +31,8 @@ describe('GET /api/v1/accounts/{accountId}', () => {
   it('should show 404 not found', async () => {
 
     const res = await request(app).get('/api/v1/accounts/1000');
+
+    console.log(res.body)
     
     expect(res.statusCode).toBe(404);
     expect(res.body.status).toBe('failed');

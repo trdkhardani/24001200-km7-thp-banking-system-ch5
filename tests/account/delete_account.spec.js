@@ -22,6 +22,8 @@ describe('DELETE /api/v1/accounts/{accountId}', () => {
 
     const res = await request(app).delete('/api/v1/accounts/3');
     
+    console.log(res.body)
+
     expect(res.statusCode).toBe(200);
     expect(res.body.status).toBe('success');
   });
@@ -30,6 +32,8 @@ describe('DELETE /api/v1/accounts/{accountId}', () => {
 
     const res = await request(app).delete('/api/v1/accounts/1000');
     
+    console.log(res.body)
+
     expect(res.statusCode).toBe(404);
     expect(res.body.status).toBe('failed');
   });
