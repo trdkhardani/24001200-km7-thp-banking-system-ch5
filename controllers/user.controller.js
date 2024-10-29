@@ -119,24 +119,27 @@ import validateUser from '../validation/user.js';
  *                   example: Email has already been taken
  */
 router.post('/', async (req, res, next) => {
-    const validatedData = {
-        name: req.body.name,
-        password: req.body.password,
-        email: req.body.email,
-        identity_type: req.body.identity_type,
-        identity_number: req.body.identity_number,
-        address: req.body.address,
-    }; 
-
-    const response = validateUser(validatedData)
-
-    if(response.error){ // if the fields don't meet the requirements
-        return res.status(400).send(response.error.details)
-    }
-    
-    let hashedPassword = await bcrypt.hash(validatedData.password, 10) // hash password
-
     try{
+        const validatedData = {
+            name: req.body.name,
+            password: req.body.password,
+            email: req.body.email,
+            identity_type: req.body.identity_type,
+            identity_number: req.body.identity_number,
+            address: req.body.address,
+        }; 
+    
+        const response = validateUser(validatedData)
+    
+        if(response.error){ // if the fields don't meet the requirements
+            throw {
+                statusCode: 400,
+                message: response.error.details,
+            }
+        }
+        
+        let hashedPassword = await bcrypt.hash(validatedData.password, 10) // hash password
+
         let user = await prisma.user.create({
             data: {
                 name: validatedData.name,
@@ -164,6 +167,11 @@ router.post('/', async (req, res, next) => {
                 status: 'failed',
                 message: "Email has already been taken"
             })
+        } else if(err.statusCode) { // throw error from if(response.error) block
+            return res.status(err.statusCode).json({
+                status: 'failed',
+                message: err.message
+            });
         }
         next(err)
     }
@@ -333,10 +341,10 @@ router.get('/:userId', async (req, res, next) => {
         })
     
         if(!user){ // if no matching data by entered user's id
-            return res.status(404).json({
-                status: 'failed',
+            throw {
+                statusCode: 404,
                 message: `User with id ${userId} not found`
-            })
+            }
         }
 
         return res.json({
@@ -344,6 +352,12 @@ router.get('/:userId', async (req, res, next) => {
             user_data: user,
         })
     } catch(err) {
+        if(err.statusCode){ // throw error from if(!user) block
+            return res.status(err.statusCode).json({
+                status: 'failed',
+                message: err.message
+            })
+        }
         next(err)
     }
 })
