@@ -3,6 +3,14 @@ import { jest } from '@jest/globals';
 import bcrypt from 'bcrypt';
 import { PrismaClient } from '@prisma/client';
 import app from '../../index.js';
+import { faker } from "@faker-js/faker";
+
+const nameFaker = faker.person.firstName();
+
+const emailFaker = faker.internet.email({
+    firstName: nameFaker,
+    provider: 'example.com',
+})
 
 const mockPrisma = {
   user: {
@@ -15,9 +23,9 @@ jest.mock('@prisma/client', () => ({
 }));
 
 describe('POST /api/v1/users', () => {
-  const mockUser = {
-    name: 'John Doe',
-    email: 'john@example.com',
+  const mockUser409 = {
+    name: nameFaker,
+    email: 'Ahmad@example.com',
     password: 'password123',
     identity_type: 'ID_CARD',
     identity_number: '123456789',
@@ -25,8 +33,8 @@ describe('POST /api/v1/users', () => {
   };
 
   const mockUserSuccess = {
-    name: 'John Doe',
-    email: 'john_stavolz@example.com',
+    name: nameFaker,
+    email: emailFaker,
     password: 'john123',
     identity_type: 'PASSPORT',
     identity_number: '676767312',
@@ -56,7 +64,7 @@ describe('POST /api/v1/users', () => {
   it('should return 409 if email is already taken', async () => {
     mockPrisma.user.create.mockRejectedValueOnce({ code: 'P2002' }); // Simulate conflict error
 
-    const res = await request(app).post('/api/v1/users').send(mockUser);
+    const res = await request(app).post('/api/v1/users').send(mockUser409);
 
     expect(res.statusCode).toBe(409);
     expect(res.body.message).toBe('Email has already been taken');
