@@ -162,13 +162,17 @@ router.post('/', async (req, res, next) => {
         amount: Number(req.body.amount)
     };
     
-    const response = validateTransaction(validatedData);
-
-    if(response.error){ // if the fields don't meet the requirements
-        return res.status(400).send(response.error.details);
-    }
     
     try {
+        const response = validateTransaction(validatedData);
+    
+        if(response.error){ // if the fields don't meet the requirements
+            throw {
+                statusCode: 400,
+                message: response.error.details
+            }
+        }
+
         let getSourceAccInfo = await prisma.bank_Account.findUnique({ // fetch data of source bank account
             where: {
                 id: validatedData.source_account_id,
@@ -182,20 +186,20 @@ router.post('/', async (req, res, next) => {
         })
 
         if(!getSourceAccInfo || !getDestAccInfo){ // if getSourceAccInfo or getDestAccInfo can't find matching data of bank_account's id
-            return res.status(409).json({
-                status: 'failed',
+            throw {
+                statusCode: 409,
                 message: `Invalid account id`
-            })
+            }
         } else if(validatedData.source_account_id === validatedData.destination_account_id){ // if the entered source_account_id and destination_account_id have the same id
-            return res.status(409).json({
-                status: 'failed',
+            throw {
+                statusCode: 409,
                 message: `Cannot do transaction between same account`
-            })
+            }
         } else if(validatedData.amount > getSourceAccInfo.balance){ // if entered amount is greater than source bank account's balance
-            return res.status(409).json({
-                status: 'failed',
+            throw {
+                statusCode: 409,
                 message: `Insufficient balance`
-            })
+            }
         }
 
         let transaction = await prisma.transaction.create({ // create transaction data
@@ -231,6 +235,12 @@ router.post('/', async (req, res, next) => {
             destination_account: updateDestAccBalance
         }) 
     } catch(err) {
+        if(err.statusCode){ // throw error from throw blocks
+            return res.status(err.statusCode).json({
+                status: 'failed',
+                message: err.message
+            })
+        }
         next(err)
     }
 })
@@ -443,10 +453,10 @@ router.get('/:transaction', async (req, res, next) => {
         })
 
         if(!transaction){ // if no matching data by entered transaction's id
-            return res.status(404).json({
-                status: 'failed',
+            throw {
+                statusCode: 404,
                 message: `Transaction with id ${transactionId} not found`
-            })
+            }
         }
 
         return res.json({
@@ -454,6 +464,12 @@ router.get('/:transaction', async (req, res, next) => {
             transaction: transaction
         })
     } catch(err) {
+        if(err.statusCode){ // throw error from throw blocks
+            return res.status(err.statusCode).json({
+                status: 'failed',
+                message: err.message
+            })
+        }
         next(err)
     }
 })
