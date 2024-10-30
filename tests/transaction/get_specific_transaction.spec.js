@@ -28,9 +28,10 @@ describe('GET /api/v1/transactions/{transactionId}', () => {
 
   it('should show 404 not found', async () => {
 
-    const res = await request(app).get('/api/v1/transactions/1000');
+    const invalidTransactId = 1000
+    const res = await request(app).get(`/api/v1/transactions/${invalidTransactId}`);
     
     expect(res.statusCode).toBe(404);
-    expect(res.body.status).toBe('failed');
+    expect(res.body.message).toBe(`Transaction with id ${invalidTransactId} not found`);
   });
 });
