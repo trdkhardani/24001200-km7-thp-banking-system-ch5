@@ -14,8 +14,8 @@ To set up the project for development on your local machine, please follow the s
 
 1. First, clone this repository to your local machine using Git commands. For example:
 ```bash
-   git clone https://github.com/trdkhardani/24001184-km7-thp-banking-system-ch5.git
-    cd 24001184-km7-thp-banking-system-ch5
+   git clone https://github.com/trdkhardani/24001200-km7-thp-banking-system-ch5.git
+    cd 24001200-km7-thp-banking-system-ch5
 ```
 2. Run the following command in the root directory of the project to install all necessary dependencies:
    
@@ -43,13 +43,13 @@ Once the installation is complete, you can start the application using one of th
    node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
    ```
 
-   Then, copy and paste the generated string to `JWT_SECRET_KEY` as the value. 
+   Then, copy and paste the generated string to `JWT_SECRET_KEY` as the value. However, it is not mandatory to use that command to generate secure random string. You can use any string you want, but it is **highly suggested** to use a secure random string.
    
 ## Database Migration
 Use this command `npx prisma migrate dev` to start the migration from `schema.prisma` file. Then, seed the database using this command: 
 
 ```bash 
-npm seed
+npm run seed
 ```
 
 If you want to migrate and seed the database simultaneously, use this command instead:
@@ -59,9 +59,26 @@ npm run migrate:seed
 Note that this command will clear the database. If you familiar with Laravel, it is similar to `php artisan migrate:fresh --seed` command.
 
 ## Available Endpoints
-See the Swagger documentation in `http://localhost:3000/docs`. You may adjust the base URL according to your own host and port configuration.
+See the Swagger documentation in `http://localhost:3000/docs`. You may adjust the base URL according to your own host and port configuration. Keep in mind that you need to [**install all the required dependencies**](#installing-dependencies) before accessing this app's Swagger docs.
 
-For each POST method request bodies, see the validation rules [here](https://github.com/trdkhardani/24001184-km7-thp-banking-system-ch5/tree/main/validation).
+For each POST method request bodies, here are the validation rules:
+
+1. POST /api/v1/users
+   - name: string, required
+   - email: string, email, required, unique
+   - password: string, minimum 6 characters long, required
+   - identity_type: string, either ID_CARD or PASSPORT, required
+   - identity_number: string, required
+   - address: string, required
+2. POST /api/v1/accounts
+   - user_id: number, positive, required
+   - bank_name: string, required
+   - bank_account_number: string, minimum 10 characters long, required, unique
+   - balance: number, positive
+3. POST /api/v1/transactions
+   - source_account_id: number, positive, required
+   - destination_account_id: number, positive, required
+   - amount: number, positive, required
 
 ## Testing the App
 To run the test, use this command:
