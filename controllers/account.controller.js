@@ -17,7 +17,7 @@ import validateAccount from '../validation/account.js';
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         application/x-www-form-urlencoded:
  *           schema:
  *             type: object
  *             properties:
@@ -100,7 +100,7 @@ router.post('/', async (req, res, next) => {
         } else if(isNaN(balance) || balance < 0){ // if the balance is a NaN or negative
             throw {
                 statusCode: 400,
-                message: response.error.details
+                message: "Balance must be a positive number"
             }
         }
         

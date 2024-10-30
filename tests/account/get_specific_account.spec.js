@@ -30,11 +30,12 @@ describe('GET /api/v1/accounts/{accountId}', () => {
 
   it('should show 404 not found', async () => {
 
-    const res = await request(app).get('/api/v1/accounts/1000');
+    const invalidAccId = 1000;
+    const res = await request(app).get(`/api/v1/accounts/${invalidAccId}`);
 
     console.log(res.body)
     
     expect(res.statusCode).toBe(404);
-    expect(res.body.status).toBe('failed');
+    expect(res.body.message).toBe(`Account with id ${invalidAccId} not found`);
   });
 });
