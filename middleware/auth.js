@@ -14,10 +14,10 @@ app.use(async function(req, res, next){
     
     try {
         if(!authorization || !authorization.startsWith('Bearer ')){
-            return res.status(401).json({
-                status: 'failed',
-                message: 'Unauthorized'
-            })
+            throw {
+                statusCode: 401,
+                message: `Unauthorized`
+            }
         }
         // if(!token){
         //     return res.status(401).json({
@@ -31,17 +31,22 @@ app.use(async function(req, res, next){
         
         jwt.verify(token, JWT_SECRET_KEY, (err, decoded) => {
             if(err){
-                return res.status(401).json({
-                    status: 'failed',
-                    message: 'Unauthorized',
-                    error: err.message
-                })
+                throw {
+                    statusCode: 401,
+                    message: err.message
+                }
             }
     
             req.user = decoded;
             next();
         })
     } catch(err) {
+        if(err.statusCode){ // throw error block
+            return res.status(err.statusCode).json({
+                status: 'failed',
+                message: err.message
+            })
+        }
         next(err);
     }
 })

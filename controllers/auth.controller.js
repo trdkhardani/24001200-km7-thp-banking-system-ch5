@@ -143,24 +143,28 @@ import authMiddleware from '../middleware/auth.js'
  *                   example: Internal server error
  */
 router.post('/register', async (req, res, next) => {
-    const validatedData = {
-        name: req.body.name,
-        password: req.body.password,
-        email: req.body.email,
-        identity_type: req.body.identity_type,
-        identity_number: req.body.identity_number,
-        address: req.body.address,
-    }; 
-
-    const response = validateUser(validatedData)
-
-    if(response.error){ // if the fields don't meet the requirements
-        return res.status(400).send(response.error.details[1])
-    }
     
-    let hashedPassword = await bcrypt.hash(validatedData.password, 10) // hash password
-
     try{
+        const validatedData = {
+            name: req.body.name,
+            password: req.body.password,
+            email: req.body.email,
+            identity_type: req.body.identity_type,
+            identity_number: req.body.identity_number,
+            address: req.body.address,
+        }; 
+    
+        const response = validateUser(validatedData)
+    
+        if(response.error){ // if the fields don't meet the requirements
+            throw {
+                statusCode: 400,
+                message: response.error.details
+            }
+        }
+        
+        let hashedPassword = await bcrypt.hash(validatedData.password, 10) // hash password
+        
         let user = await prisma.user.create({
             data: {
                 name: validatedData.name,
@@ -189,6 +193,11 @@ router.post('/register', async (req, res, next) => {
             return res.status(409).json({
                 status: 'failed',
                 message: "Email has already been taken"
+            })
+        } else if (err.statusCode){ // throw error blocks
+            return res.status(err.statusCode).json({
+                status: 'failed',
+                message: err.message
             })
         }
         next(err)
@@ -280,13 +289,17 @@ router.post('/login', async (req, res, next) => {
         password: req.body.password,
     }; 
 
-    const response = validateCredentials(validatedData)
-
-    if(response.error){ // if the fields don't meet the requirements
-        return res.status(400).send(response.error.details[1])
-    }
-
+    
     try {
+        const response = validateCredentials(validatedData)
+    
+        if(response.error){ // if the fields don't meet the requirements
+            throw {
+                statusCode: 400,
+                message: response.error.details
+            }
+        }
+        
         let user = await prisma.user.findUnique({
             where: {
                 email: validatedData.email
@@ -294,19 +307,19 @@ router.post('/login', async (req, res, next) => {
         })
 
         if(!user){ // if no email found from the request body
-            return res.status(400).json({
-                status: 'failed',
+            throw {
+                statusCode: 400,
                 message: `Invalid email or password`
-            })
+            }
         }
 
         let isPasswordCorrect = await bcrypt.compare(validatedData.password, user.password)
 
         if(!isPasswordCorrect){ // if entered password is false or incorrect
-            return res.status(400).json({
-                status: 'failed',
+            throw {
+                statusCode: 400,
                 message: `Invalid email or password`
-            })
+            }
         }
 
         let token = jwt.sign({ id: user.id, email: user.email, name: user.name }, JWT_SECRET_KEY, {expiresIn: '6h'})
@@ -325,6 +338,12 @@ router.post('/login', async (req, res, next) => {
         // res.redirect('/auth/authenticate')
 
     } catch(err) {
+        if(err.statusCode){ // throw error block
+            return res.status(err.statusCode).json({
+                status: 'failed',
+                message: err.message
+            })
+        }
         next(err)
     }
 })
